@@ -1,0 +1,21 @@
+# shadow-cljs
+.shadow-cljs/
+public/js/
+
+# node
+node_modules/
+
+# clojure
+.cpcache/
+target/
+.nrepl-port
+.lsp/
+.clj-kondo/.cache/
+
+# build artifacts
+dist/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
