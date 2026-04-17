@@ -1,0 +1,47 @@
+name: contracts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contracts/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'contracts/**'
+
+jobs:
+  lint:
+    name: EDN contract lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Cache Clojure deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cpcache
+          key: clj-${{ hashFiles('deps.edn') }}
+          restore-keys: clj-
+
+      - name: Parse + validate EDN contracts
+        run: |
+          npx shadow-cljs run fuxx.contracts/bootstrap!

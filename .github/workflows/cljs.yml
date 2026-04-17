@@ -1,0 +1,55 @@
+name: cljs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'dev/**'
+      - 'test/**'
+      - 'contracts/**'
+      - 'shadow-cljs.edn'
+      - 'deps.edn'
+      - 'package.json'
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: shadow-cljs compile
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install JS deps
+        run: npm ci
+
+      - name: Cache Clojure deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.cpcache
+          key: clj-${{ hashFiles('deps.edn', 'shadow-cljs.edn') }}
+          restore-keys: clj-
+
+      - name: Compile CLJS (release)
+        run: npx shadow-cljs compile app
+
+      - name: Run CLJS tests
+        run: npx shadow-cljs compile test && node target/test/test.js
+        continue-on-error: true

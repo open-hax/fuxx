@@ -1,4 +1,4 @@
-{:source-paths ["src" "dev"]
+{:source-paths ["src" "dev" "test"]
 
  :dependencies
  [[metosin/malli "0.16.4"]
@@ -25,6 +25,12 @@
                 :http-root   "public"
                 :http-port   3000
                 :preloads    [shadow.cljs.devtools.client.browser]}}
+
+  :test
+  {:target    :node-test
+   :output-to "target/test/test.js"
+   :ns-regexp "-test$"
+   :runner-ns shadow.test.node}
 
   :release
   {:target     :browser
