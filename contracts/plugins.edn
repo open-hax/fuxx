@@ -1,0 +1,20 @@
+{:fuxx.plugin/manifest
+ {:description "Manifest for SCI-backed plugins."
+  :schema
+  [:map
+   [:plugin/id :keyword]
+   [:plugin/name :string]
+   [:plugin/version :string]
+   [:plugin/capabilities [:vector :keyword]]
+   [:plugin/commands {:optional true} [:vector :keyword]]
+   [:plugin/views {:optional true} [:vector :keyword]]
+   [:plugin/policies {:optional true} :map]]}
+
+ :fuxx.plugin/policy
+ {:description "Capability and path restrictions for plugins."
+  :schema
+  [:map
+   [:allow/capabilities [:vector :keyword]]
+   [:allow/read-paths {:optional true} [:vector :string]]
+   [:allow/write-paths {:optional true} [:vector :string]]
+   [:allow/net-hosts {:optional true} [:vector :string]]]}}

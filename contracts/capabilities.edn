@@ -1,0 +1,45 @@
+{:fuxx.capability/call
+ {:description "Request from runtime/plugin to host capability adapter."
+  :schema
+  [:map
+   [:capability :keyword]
+   [:args :map]
+   [:caller {:optional true} :keyword]
+   [:request-id {:optional true} :string]]}
+
+ :fuxx.capability/result
+ {:description "Normalized capability result."
+  :schema
+  [:map
+   [:ok :boolean]
+   [:value {:optional true} any?]
+   [:error {:optional true}
+    [:map
+     [:code :keyword]
+     [:message :string]
+     [:data {:optional true} :map]]]]}
+
+ :fuxx.capability/specs
+ {:fs/read
+  {:args [:map [:path :string] [:encoding {:optional true} [:enum :utf8 :edn :json :bytes]]]
+   :ret  [:map [:ok :boolean] [:text {:optional true} :string] [:error {:optional true} :string]]}
+
+  :fs/write
+  {:args [:map [:path :string] [:text :string] [:mkdir? {:optional true} :boolean]]
+   :ret  [:map [:ok :boolean] [:bytes-written {:optional true} :int] [:error {:optional true} :string]]}
+
+  :http/request
+  {:args [:map
+          [:url :string]
+          [:method {:optional true} [:enum :get :post :put :patch :delete]]
+          [:headers {:optional true} [:map-of :keyword :string]]
+          [:body {:optional true} any?]]
+   :ret  [:map [:ok :boolean] [:status {:optional true} :int] [:body {:optional true} any?] [:error {:optional true} :string]]}
+
+  :window/open
+  {:args [:map [:route :string] [:title {:optional true} :string] [:focus? {:optional true} :boolean]]
+   :ret  [:map [:ok :boolean] [:window-id {:optional true} :string] [:error {:optional true} :string]]}
+
+  :plugin/load
+  {:args [:map [:plugin/id :keyword] [:source :string] [:capabilities [:vector :keyword]]]
+   :ret  [:map [:ok :boolean] [:plugin/id {:optional true} :keyword] [:error {:optional true} :string]]}}}

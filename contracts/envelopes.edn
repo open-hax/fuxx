@@ -1,0 +1,26 @@
+{:fuxx.contract/envelope
+ {:description "Canonical runtime envelope for all cross-boundary messages."
+  :schema
+  [:map
+   [:id :string]
+   [:kind [:enum :cmd :evt :qry :res :err]]
+   [:name :keyword]
+   [:ts inst?]
+   [:payload :map]
+   [:meta {:optional true} :map]]}
+
+ :fuxx.contract/dispatch
+ {:description "UI/runtime dispatch payload."
+  :schema
+  [:map
+   [:target [:enum :app :router :renderer :host :plugin]]
+   [:envelope :fuxx.contract/envelope]]}
+
+ :fuxx.contract/error
+ {:description "Normalized runtime error payload."
+  :schema
+  [:map
+   [:error/code :keyword]
+   [:error/message :string]
+   [:error/data {:optional true} :map]
+   [:error/trace {:optional true} [:vector :map]]]}}
