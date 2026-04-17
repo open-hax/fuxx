@@ -1,0 +1,33 @@
+[package]
+name        = "fuxx-host"
+version     = "0.1.0"
+edition     = "2021"
+description = "fuxx native host shell — WRY/WebKitGTK IPC adapter"
+license     = "GPL-3.0-or-later"
+
+[[bin]]
+name = "fuxx-host"
+path = "src/main.rs"
+
+[dependencies]
+# Windowing + WebView (WebKitGTK on Linux, WKWebView on macOS)
+wry  = { version = "0.37", features = [] }
+tao  = { version = "0.26" }
+
+# Serialization
+serde       = { version = "1", features = ["derive"] }
+serde_json  = "1"
+
+# Async runtime (capability handlers)
+tokio = { version = "1", features = ["full"] }
+
+# HTTP capability
+reqwest = { version = "0.12", features = ["json", "blocking"] }
+
+# Error handling
+anyhow = "1"
+
+[profile.release]
+opt-level = 3
+lto       = true
+strip     = true
