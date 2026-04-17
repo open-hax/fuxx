@@ -11,7 +11,7 @@ pub async fn read(args: Value) -> Result<CapabilityResult> {
 
     match tfs::read_to_string(path).await {
         Ok(text) => Ok(CapabilityResult::ok(json!({ "text": text }), None)),
-        Err(e)   => Ok(CapabilityResult::err("fs/read-error", &e.to_string(), None)),
+        Err(e) => Ok(CapabilityResult::err("fs/read-error", &e.to_string(), None)),
     }
 }
 
@@ -30,7 +30,14 @@ pub async fn write(args: Value) -> Result<CapabilityResult> {
     }
 
     match tfs::write(path, text).await {
-        Ok(_)  => Ok(CapabilityResult::ok(json!({ "bytes-written": text.len() }), None)),
-        Err(e) => Ok(CapabilityResult::err("fs/write-error", &e.to_string(), None)),
+        Ok(_) => Ok(CapabilityResult::ok(
+            json!({ "bytes-written": text.len() }),
+            None,
+        )),
+        Err(e) => Ok(CapabilityResult::err(
+            "fs/write-error",
+            &e.to_string(),
+            None,
+        )),
     }
 }

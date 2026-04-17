@@ -4,7 +4,7 @@ use serde_json::{json, Value};
 use crate::ipc::CapabilityResult;
 
 // SCI plugin loading stub.
-// TODO: spawn a SCI process or thread, apply capability whitelist,
+// TODO: spawn a SCI process/thread, apply capability whitelist,
 // evaluate plugin source, register exported commands/views.
 
 pub async fn load(args: Value) -> Result<CapabilityResult> {
@@ -12,7 +12,10 @@ pub async fn load(args: Value) -> Result<CapabilityResult> {
         .as_str()
         .ok_or_else(|| anyhow::anyhow!("plugin/load: missing :plugin/id"))?;
 
-    eprintln!("[fuxx-host] plugin/load: {} (stub — SCI eval not yet wired)", plugin_id);
+    eprintln!(
+        "[fuxx-host] plugin/load: {} (stub \u2014 SCI eval not yet wired)",
+        plugin_id
+    );
 
     Ok(CapabilityResult::ok(
         json!({ "plugin/id": plugin_id, "status": "stub" }),

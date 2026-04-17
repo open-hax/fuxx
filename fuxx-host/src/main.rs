@@ -33,7 +33,7 @@ fn main() -> Result<()> {
                     match ipc::handle(&body).await {
                         Ok(result) => result,
                         Err(e) => format!(
-                            r#"{{"ok":false,"error":{{"code":"ipc/error","message":"{}"}}}}""",
+                            r#"{{"ok":false,"error":{{"code":"ipc/error","message":"{}"}}}}",
                             e
                         ),
                     }

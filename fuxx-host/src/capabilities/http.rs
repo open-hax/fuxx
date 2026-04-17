@@ -8,24 +8,23 @@ pub async fn request(args: Value) -> Result<CapabilityResult> {
         .as_str()
         .ok_or_else(|| anyhow::anyhow!("http/request: missing :url"))?;
 
-    let method = args["method"]
-        .as_str()
-        .unwrap_or("get")
-        .to_uppercase();
+    let method = args["method"].as_str().unwrap_or("get").to_uppercase();
 
     let client = reqwest::Client::new();
 
     let mut req = match method.as_str() {
-        "GET"    => client.get(url),
-        "POST"   => client.post(url),
-        "PUT"    => client.put(url),
-        "PATCH"  => client.patch(url),
+        "GET" => client.get(url),
+        "POST" => client.post(url),
+        "PUT" => client.put(url),
+        "PATCH" => client.patch(url),
         "DELETE" => client.delete(url),
-        m        => return Ok(CapabilityResult::err(
-            "http/unknown-method",
-            &format!("Unknown method: {}", m),
-            None,
-        )),
+        m => {
+            return Ok(CapabilityResult::err(
+                "http/unknown-method",
+                &format!("Unknown method: {}", m),
+                None,
+            ))
+        }
     };
 
     if let Some(headers) = args["headers"].as_object() {
@@ -44,8 +43,15 @@ pub async fn request(args: Value) -> Result<CapabilityResult> {
         Ok(resp) => {
             let status = resp.status().as_u16();
             let body: Value = resp.json().await.unwrap_or(Value::Null);
-            Ok(CapabilityResult::ok(json!({ "status": status, "body": body }), None))
+            Ok(CapabilityResult::ok(
+                json!({ "status": status, "body": body }),
+                None,
+            ))
         }
-        Err(e) => Ok(CapabilityResult::err("http/request-error", &e.to_string(), None)),
+        Err(e) => Ok(CapabilityResult::err(
+            "http/request-error",
+            &e.to_string(),
+            None,
+        )),
     }
 }

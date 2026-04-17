@@ -6,7 +6,6 @@ use crate::ipc::CapabilityResult;
 
 // NOTE: Multi-window management requires passing an EventLoopProxy or
 // a channel from main.rs. This stub returns a window-id for now.
-// Wire up real window spawning in the next pass.
 
 pub async fn open(args: Value) -> Result<CapabilityResult> {
     let route = args["route"]
@@ -18,5 +17,8 @@ pub async fn open(args: Value) -> Result<CapabilityResult> {
     // TODO: send OpenWindow event through EventLoopProxy
     eprintln!("[fuxx-host] window/open: route={} id={}", route, window_id);
 
-    Ok(CapabilityResult::ok(json!({ "window-id": window_id, "route": route }), None))
+    Ok(CapabilityResult::ok(
+        json!({ "window-id": window_id, "route": route }),
+        None,
+    ))
 }
