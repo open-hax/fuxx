@@ -1,7 +1,5 @@
-mod capabilities;
-mod ipc;
-
 use anyhow::Result;
+use fuxx_host_lib::ipc;
 use tao::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
@@ -17,7 +15,6 @@ fn main() -> Result<()> {
         .with_inner_size(tao::dpi::LogicalSize::new(1280.0, 800.0))
         .build(&event_loop)?;
 
-    // Resolve path to compiled CLJS shell
     let index_url = {
         let mut p = std::env::current_dir()?;
         p.push("public/index.html");
@@ -26,7 +23,6 @@ fn main() -> Result<()> {
 
     let webview = WebViewBuilder::new()
         .with_url(&index_url)
-        // Expose host IPC handler: window.__fuxx_ipc(json_string) -> Promise<json_string>
         .with_ipc_handler(|request| {
             let body = request.body().to_string();
             tokio::runtime::Builder::new_current_thread()
@@ -36,7 +32,10 @@ fn main() -> Result<()> {
                 .block_on(async move {
                     match ipc::handle(&body).await {
                         Ok(result) => result,
-                        Err(e) => format!(r#"{{"ok":false,"error":{{"code":"ipc/error","message":"{}"}}}}», e),
+                        Err(e) => format!(
+                            r#"{{"ok":false,"error":{{"code":"ipc/error","message":"{}"}}}}""",
+                            e
+                        ),
                     }
                 })
         })

@@ -5,6 +5,10 @@ edition     = "2021"
 description = "fuxx native host shell — WRY/WebKitGTK IPC adapter"
 license     = "GPL-3.0-or-later"
 
+[lib]
+name = "fuxx_host_lib"
+path = "src/lib.rs"
+
 [[bin]]
 name = "fuxx-host"
 path = "src/main.rs"
@@ -18,14 +22,23 @@ tao  = { version = "0.26" }
 serde       = { version = "1", features = ["derive"] }
 serde_json  = "1"
 
-# Async runtime (capability handlers)
+# Async runtime
 tokio = { version = "1", features = ["full"] }
 
 # HTTP capability
-reqwest = { version = "0.12", features = ["json", "blocking"] }
+reqwest = { version = "0.12", features = ["json"] }
 
 # Error handling
 anyhow = "1"
+
+# UUID for window IDs
+uuid = { version = "1", features = ["v4"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full", "test-util"] }
+
+[features]
+network-tests = []
 
 [profile.release]
 opt-level = 3
