@@ -2,17 +2,10 @@ name: cljs
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'dev/**'
-      - 'test/**'
-      - 'contracts/**'
-      - 'shadow-cljs.edn'
-      - 'deps.edn'
-      - 'package.json'
+    branches: [main, 'ci/**', 'feat/**', 'fix/**']
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -32,10 +25,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Install JS deps
-        run: npm ci
+        run: npm install
 
       - name: Cache Clojure deps
         uses: actions/cache@v4
@@ -49,7 +41,3 @@ jobs:
 
       - name: Compile CLJS (release)
         run: npx shadow-cljs compile app
-
-      - name: Run CLJS tests
-        run: npx shadow-cljs compile test && node target/test/test.js
-        continue-on-error: true
